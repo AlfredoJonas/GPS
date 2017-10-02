@@ -2,6 +2,19 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, Platform } from 'ionic-angular';
 
 import { Geolocation } from '@ionic-native/geolocation';
+import {
+  GoogleMaps,
+  GoogleMap,
+  GoogleMapsEvent,
+  GoogleMapOptions,
+  CameraPosition,
+  MarkerOptions,
+  Marker,
+  LatLng,
+  Geocoder, 
+  GeocoderRequest, 
+  GeocoderResult
+ } from '@ionic-native/google-maps';
 declare var google;
 /**
  * Generated class for the InicioPage page.
@@ -16,38 +29,60 @@ declare var google;
 })
 export class InicioPage {
 
-map: any;
-image: any;
+map: GoogleMap;
+mapElement: HTMLElement;
+marker: any;
 
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, 
-            private platform: Platform, private geolocation: Geolocation) {
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    private platform: Platform, 
+    private geolocation: Geolocation,
+    private googleMaps: GoogleMaps,
+    private geocoder: Geocoder    
+  ) {
 
     platform.ready().then(() => {
-
+        
+        var posOptions = {timeout: 10000, enableHighAccuracy: false};
         // get current position
-        geolocation.getCurrentPosition().then(pos => {
+        geolocation.getCurrentPosition(posOptions).then(pos => {
             console.log('lat: ' + pos.coords.latitude + ', lon: ' + pos.coords.longitude);
-
-            // make sure to create following structure in your view.html file
-            // and add a height (for example 100%) to it, else the map won't be visible
-            // <ion-content>
-            //  <div #map id="map" style="height:100%;"></div>
-            // </ion-content>
-
-            // create a new map by passing HTMLElement
-            this.map = new google.maps.Map(document.getElementById('map'), {
+            alert('lat: ' + pos.coords.latitude + ', lon: ' + pos.coords.longitude);
+            this.mapElement = document.getElementById('map');
+          
+            let mapOptions: GoogleMapOptions = {
+              camera: {
+                target: {
+                  lat: pos.coords.latitude,
+                  lng: pos.coords.longitude
+                },
                 zoom: 18,
-                center: {lat: pos.coords.latitude, lng: pos.coords.longitude},
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            });
+                tilt: 30
+              }
+            };
+            
+            this.map = this.googleMaps.create(this.mapElement, mapOptions);
 
-            this.image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
-                let beachMarker = new google.maps.Marker({
-                position: {lat: pos.coords.latitude, lng: pos.coords.longitude},
-                map: this.map,
-                icon: this.image,
-                draggable: true
+            this.map.one(GoogleMapsEvent.MAP_READY)
+            .then(() => {
+              console.log('Map is ready!');
+      
+              // Now you can use all methods safely.
+              this.map.addMarker({
+                  title: 'Ubicacion',
+                  icon: 'blue',
+                  animation: 'DROP',
+                  draggable: true,
+                  position: {
+                    lat: pos.coords.latitude,
+                    lng: pos.coords.longitude
+                  }
+                })
+                .then(marker => {
+                  this.marker = marker;
+                });
             });
 
         });
@@ -58,6 +93,28 @@ image: any;
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad InicioPage');
+  }
+
+  direccion:any;
+  address:any;  
+  onSelectUbication(){
+    let request: GeocoderRequest = {
+      position: new LatLng(this.marker.getPosition().lat, this.marker.getPosition().lng),
+    };
+    this.geocoder.geocode(request)
+    .then((results) => {
+      this.direccion = results[0];
+      this.address = [
+        (results[0].thoroughfare || "") + " " + (results[0].subThoroughfare || ""),
+        results[0].locality
+      ].join(", ");
+      console.log("data_: ", this.address);
+      this.marker.setTitle(this.address);
+      this.marker.showInfoWindow();
+      alert(JSON.stringify(this.direccion));
+      alert(this.address);
+    });
+       
   }
 
 }

@@ -76,14 +76,14 @@
         <splash height="1024" src="resources/ios/splash/Default-Portrait~ipad.png" width="768" />
         <splash height="960" src="resources/ios/splash/Default@2x~iphone.png" width="640" />
         <splash height="480" src="resources/ios/splash/Default~iphone.png" width="320" />
+        <splash height="2732" src="resources/ios/splash/Default@2x~universal~anyany.png" width="2732" />
     </platform>
     <engine name="android" spec="^6.2.3" />
-    <plugin name="cordova-plugin-console" spec="^1.0.5" />
     <plugin name="cordova-plugin-device" spec="^1.1.4" />
     <plugin name="cordova-plugin-geolocation" spec="^2.4.3" />
-    <plugin name="cordova-plugin-googlemaps" spec="git+https://github.com/mapsplugin/cordova-plugin-googlemaps.git#multiple_maps">
-        <variable name="API_KEY_FOR_ANDROID" value="AIzaSyBqk3_8GI5IGcPte8yiR_smJkm6R8e4_jE" />
-        <variable name="API_KEY_FOR_IOS" value="AIzaSyCymJGY4kt25VRzQYxr0cwf80heYbb0vzA" />
+    <plugin name="cordova-plugin-googlemaps" spec="git+https://github.com/mapsplugin/cordova-plugin-googlemaps.git">
+        <variable name="API_KEY_FOR_ANDROID" value="AIzaSyDHbiA-VEemrDazyE84Lr49SyupISE5Vu0" />
+        <variable name="API_KEY_FOR_IOS" value="AIzaSyBM3orCeyIEJzCSsL01PUzf4IqKik2-tjg" />
     </plugin>
     <plugin name="cordova-plugin-splashscreen" spec="^4.0.3" />
     <plugin name="cordova-plugin-statusbar" spec="^2.2.2" />
