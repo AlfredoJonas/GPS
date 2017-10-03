@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, Platform } from 'ionic-angular';
+import { NavController, NavParams, Platform, ToastController } from 'ionic-angular';
 
 import { Geolocation } from '@ionic-native/geolocation';
 import {
@@ -40,9 +40,9 @@ marker: any;
     private platform: Platform, 
     private geolocation: Geolocation,
     private googleMaps: GoogleMaps,
-    private geocoder: Geocoder    
+    private geocoder: Geocoder,
+    private toastController: ToastController    
   ) {
-
     platform.ready().then(() => {
         
         var posOptions = {timeout: 10000, enableHighAccuracy: false};
@@ -62,13 +62,14 @@ marker: any;
                 tilt: 30
               }
             };
-            
+            alert('crear mapa');
             this.map = this.googleMaps.create(this.mapElement, mapOptions);
 
             this.map.one(GoogleMapsEvent.MAP_READY)
             .then(() => {
               console.log('Map is ready!');
-      
+              alert('Map is ready!');
+            
               // Now you can use all methods safely.
               this.map.addMarker({
                   title: 'Ubicacion',
@@ -81,7 +82,23 @@ marker: any;
                   }
                 })
                 .then(marker => {
+                  alert('Marker add!');
                   this.marker = marker;
+                  marker.on(GoogleMapsEvent.MARKER_DRAG)
+                  .subscribe(() => {
+                    const toast = this.toastController.create({
+                        message: 'DRAGGGG',
+                        duration: 1000,
+                        position: 'bottom'
+                      });
+                    
+                      toast.onDidDismiss(() => {
+                        console.log('Dismissed toast');
+                      });
+                    
+                      toast.present();
+
+                  });
                 });
             });
 
