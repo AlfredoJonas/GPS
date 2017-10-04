@@ -16,6 +16,8 @@ import {
   GeocoderResult
  } from '@ionic-native/google-maps';
 declare var google;
+var map;
+var marker;
 /**
  * Generated class for the InicioPage page.
  *
@@ -27,11 +29,12 @@ declare var google;
   selector: 'page-inicio',
   templateUrl: 'inicio.html',
 })
+
+
+
 export class InicioPage {
 
-map: GoogleMap;
-mapElement: HTMLElement;
-marker: any;
+  
 
 
   constructor(
@@ -50,9 +53,31 @@ marker: any;
         geolocation.getCurrentPosition(posOptions).then(pos => {
             console.log('lat: ' + pos.coords.latitude + ', lon: ' + pos.coords.longitude);
             alert('lat: ' + pos.coords.latitude + ', lon: ' + pos.coords.longitude);
-            this.mapElement = document.getElementById('map');
           
-            let mapOptions: GoogleMapOptions = {
+            map = new google.maps.Map(document.getElementById('map'), {
+              center: {lat: pos.coords.latitude, lng: pos.coords.longitude},
+              zoom: 18,
+              tilt: 30
+            });
+
+            marker = new google.maps.Marker({
+              map: map,
+              title: 'Ubicacion',
+              draggable: true,
+              animation: google.maps.Animation.DROP,
+              position: {lat: pos.coords.latitude, lng: pos.coords.longitude}
+            });
+            map.addListener('click', function(event) {
+              console.log(marker);
+              let myLatlng = new google.maps.LatLng(event.latLng.lat(),event.latLng.lng());
+              marker.setPosition(myLatlng);
+            });
+
+            marker.addListener('click', function(){
+              alert();
+            });
+
+            /*let mapOptions: GoogleMapOptions = {
               camera: {
                 target: {
                   lat: pos.coords.latitude,
@@ -100,7 +125,7 @@ marker: any;
 
                   });
                 });
-            });
+            }); */
 
         });
 
@@ -112,7 +137,7 @@ marker: any;
     console.log('ionViewDidLoad InicioPage');
   }
 
-  direccion:any;
+  /* direccion:any;
   address:any;  
   onSelectUbication(){
     let request: GeocoderRequest = {
@@ -132,6 +157,6 @@ marker: any;
       alert(this.address);
     });
        
-  }
+  } */
 
 }
