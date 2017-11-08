@@ -27,3 +27,5 @@ Substitute ios for android if not on a Mac.
 # GPS
 Its's a simple example for implement google maps with Ionic v3, 
 if you follow a simple steps, you obtaing algo somoething like this...
+
+![alt text](https://raw.githubusercontent.com/alfredojonas/GPS/master/map_example.png)
